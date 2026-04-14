@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Barlow } from "next/font/google";
 import "./globals.css";
+import { Header } from "./components/layout/Header";
 
 const barlow = Barlow({
   variable: "--font-barlow-sans",
@@ -20,7 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" className={`${barlow.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        <Header />
+        <main className="max-w-375 mx-auto px-7 w-full py-10">{children}</main>
+      </body>
     </html>
   );
 }
