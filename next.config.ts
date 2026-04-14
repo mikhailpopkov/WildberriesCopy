@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    domains: ["mow-static-cdn-03.geobasket.ru"],
+  },
 };
 
 export default nextConfig;
