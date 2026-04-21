@@ -6,11 +6,14 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignInDto, SignUpDto } from './dto';
+import { SessionDto, SignInDto, SignUpDto } from './dto';
 import type { Response } from 'express';
 import { CookieService } from './cookie.service';
+import { AuthGuard } from './auth.guard';
+import { SessionInfo } from './session-info.decorator';
 
 @Controller()
 export class AuthController {
@@ -29,19 +32,32 @@ export class AuthController {
       body.password,
       body.username,
     );
-    this.cookieService.setTokenCookie(res, await accessToken);
+    this.cookieService.setTokenCookie(res, accessToken);
   }
 
   @Post('sign-in')
   @HttpCode(HttpStatus.OK)
-  signIn(@Body() body: SignInDto) {
-    return null;
+  async signIn(
+    @Body() body: SignInDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken } = await this.authService.signIn(
+      body.email,
+      body.password,
+    );
+    this.cookieService.setTokenCookie(res, accessToken);
   }
 
   @Post('sign-out')
   @HttpCode(HttpStatus.OK)
-  signOut() {}
+  @UseGuards(AuthGuard)
+  signOut(@Res({ passthrough: true }) res: Response) {
+    this.cookieService.removeTokenCookie(res);
+  }
 
   @Get('session')
-  session() {}
+  @UseGuards(AuthGuard)
+  session(@SessionInfo() session: SessionDto) {
+    return session;
+  }
 }

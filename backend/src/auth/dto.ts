@@ -25,4 +25,7 @@ export class SessionDto {
 
   @IsEmail()
   email!: string;
+
+  'iat'!: number;
+  'exp'!: number;
 }

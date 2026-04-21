@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { PasswordService } from './password.service';
 import { JwtService } from '@nestjs/jwt';
@@ -24,9 +28,30 @@ export class AuthService {
 
     const newUser = await this.usersService.create(email, hash, salt, username);
 
-    const accessToken = this.jwtService.signAsync({
+    const accessToken = await this.jwtService.signAsync({
       id: newUser.id,
       email: newUser.email,
+    });
+
+    return { accessToken };
+  }
+
+  async signIn(email: string, password: string) {
+    const user = await this.usersService.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException({ type: 'user-not-found' });
+    }
+
+    const hash = this.passwordService.getHash(password, user.salt);
+
+    if (hash !== user.hash) {
+      throw new BadRequestException({ type: 'invalid-password' });
+    }
+
+    const accessToken = await this.jwtService.signAsync({
+      id: user.id,
+      email: user.email,
     });
 
     return { accessToken };
