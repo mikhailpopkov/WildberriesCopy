@@ -1,8 +1,5 @@
-import { Slider } from "./components/pages/home/slider/Slider";
-import {
-  SliderData,
-  MiniSliderData,
-} from "./components/pages/home/slider/slider.data";
+import { Slider } from "@/shared";
+import { SliderData, MiniSliderData } from "@/shared";
 
 export default function Home() {
   return (

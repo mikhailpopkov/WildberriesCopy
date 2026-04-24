@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Barlow } from "next/font/google";
 import "./globals.css";
-import { Header } from "./components/layout/Header";
+import { Header } from "@/widgets";
 
 const barlow = Barlow({
   variable: "--font-barlow-sans",
